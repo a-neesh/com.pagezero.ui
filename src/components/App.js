@@ -7,6 +7,7 @@ import { additionalMessages } from '../messages';
 import AddMessage from './AddMessage';
 import Canvas from './Canvas';
 import Konva from 'konva';
+import axios from 'axios';
 
 class App extends Component {
 
@@ -23,17 +24,31 @@ class App extends Component {
     this.handleClick = this.handleClick.bind(this);
     this.handleMouseEnter = this.handleMouseEnter.bind(this);
     this.handleMouseLeave = this.handleMouseLeave.bind(this);
+    this.fetchMessages = this.fetchMessages.bind(this);
   }
 
   fetchMessages = () => {
     var MESSAGE_SERVICE_URL = "http://localhost";
-    this.setState({...this.state, isFetching: true})
-    fetch(MESSAGE_SERVICE_URL)
-      .then(response => response.json())
-      .then(result => this.setState({messages: result, 
-                                     isFetching: false}))
+    // this.setState({...this.state, isFetching: true})
+    this.setState( (prevState) => ({isFetching: true}) );
+    // fetch(MESSAGE_SERVICE_URL)
+    //   .then(response => response.json())
+    //   .then(result => 
+    //           this.setState( (prevState) => ({messages: result, isFetching: false}) )
+    //         )
+    axios.get(MESSAGE_SERVICE_URL)
+      .then(response => this.setState( (prevState) => ({messages: response, isFetching: false}) ) )
       .catch(e => console.log(e));
     }
+  
+  componentDidMount() {
+    this.fetchMessages();
+    this.timer = setInterval(() => this.fetchMessages(), 5000);
+  }
+
+  componentWillUnmount() {
+    this.timer = null;
+  }
 
   handleClick() {
     this.setState( (prevState) => ({color: Konva.Util.getRandomColor()}) );
@@ -71,6 +86,7 @@ class App extends Component {
         <p className="App-intro">
           Welcome to the 'Page Zero' React app!
         </p>
+        <p>{this.state.isFetching ? 'Fetching messages...' : ''}</p>
         <AllMessages css="movies" messages={this.state.messages}/>
         <div className="add-movies"><button onClick={this.loadAdditionalMessages}>Load more...</button></div>
         <AddMessage addMessage={this.addMessagetoList} />
