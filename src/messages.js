@@ -1,0 +1,43 @@
+const initialMessages = {
+    message1: {
+      title: "Regarding something",
+      date:"17-07-2018",
+      sender: "MK Gandhi",
+      recipient: "anonymous",
+      message:"letters/gandhi.jpg"
+    },
+    message2: {
+      title: "Regarding an Important Matter",
+      date:"17-07-2018",
+      sender:"Wilhelm",
+      recipient:"President Wilson",
+      message:"letters/wilhelm.gif"
+    },
+    message3: {
+      title: "Something Something",
+      date:"17-07-2018",
+      sender:"Albert Einstein",
+      recipient:"anonymous",
+      message:"letters/einstein.jpg"
+    }
+  };
+   
+  const additionalMessages = {
+    message5: {
+      title: "Something Written",
+      date:"17-07-2018",
+      sender: "castro",
+      recipient: "anonymous",
+      message: "./letters/castro.webp"
+    },
+    message6: {
+        title: "Something Unknown",
+        date:"17-07-2018",
+        sender: "anonypmous",
+        recipient: "anonymous",
+        message: "./letters/anonymous.jpg"
+      }
+  };
+   
+  export {initialMessages};
+  export {additionalMessages};

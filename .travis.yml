@@ -1,0 +1,13 @@
+language: node_js
+node_js: stable
+cache:
+  directories: node_modules
+script: npm run start && npm run test && npm run build
+# install: npm install
+deploy:
+  provider: heroku
+  api_key:
+    secure: yUmzhExQQL2vvdFho780jHsFLjnEdiHSUaxuC8O0seA953a29/HZj8BviEvnoylXud7dpPGiCbgCeN/Y+dP3McFHGr65c97NMdkzPPLTqqsiS+B20n4tfcC9AhewrXJL9TTj5HDq6WrhC3BVBRGeuoTrpwV/ERHhycXrJyma3Fcqb/kGKsEFpc8GHRfW+rddaTAiHbpgAuHd+G1D/O/PigKjjdVmv7PTqsCKtYwdPfIXsyQHX0QLbBgBKCWUTG9k7w1kdru7ypg/syMzZow+o50HnW1WIIzbt0of3xqHENsJ09XaoISA3cUGGULz7CSQpYmW2umlzHvo337HsIBKS9mQ/ChuaCqnYzmgCWB++eKcRsQGF6txPXOvW9BXSd/6aFEqTLxklBpwhe9l1PU+xDB31m/mn7Y2Zdg+sbxpkRue81RiBf+Xzs56lgzUpf4P+0yr+JhI1IWOLsLifx6Nx/jo3ywSpPvmcuAWTpUmgxw4/0X3SIZEiDas+mwQZZ7t5zSxntLLXifS2eNuPV8duY9yRTJQ6Dxl29Ys9MQnOUzCYorqzp87b49PGZcVjZaMoGrR6ywK77QfsKIr3sKnD8sQ5lLzFv+P+ZIKPsYjQehey4VaSq/xyhX5mNvxW0ow9tYpOsxB2EbWgsZxgsjTj187cy0/meJL7u5yZHolkPA=
+  app: pagezero-ui
+  # on:
+  #   repo: a-neesh/com.pagezero.ui
