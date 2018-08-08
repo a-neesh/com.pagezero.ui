@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import axios from 'axios';
 
 class AddMessage extends Component {
 	
@@ -19,17 +18,9 @@ class AddMessage extends Component {
 		this.props.addMessage(message);
 	}
 
-	handleSubmit = event => {
-		axios
-			.post(this.props.message_service_url, {'message': this.props.message})
-			.then(r => console.log(r))
-			.catch(e => console.log(e));
-		event.preventDefault()
-	}
-
 	render() {
 		return (
-				<form className="message-form" onSubmit={(e)=> this.addNewMessage(e)}>{/*this.handleSubmit(e)}>*/}
+				<form className="message-form" onSubmit={(e)=> this.addNewMessage(e)}>
 					<p>Add a Message</p>
 					<input ref={ ( input ) => this.title = input } type="text" placeholder="Title" />
 					<input ref={ ( input ) => this.sender = input } type="text" placeholder="Date" />

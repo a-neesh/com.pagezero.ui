@@ -2,22 +2,20 @@ import React, { Component } from 'react';
 import '../App.css';
 import Header from './Header';
 import AllMessages from './AllMessages';
-import { initialMessages } from '../messages';
-import { additionalMessages } from '../messages';
 import AddMessage from './AddMessage';
 import Canvas from './Canvas';
 import Konva from 'konva';
 import axios from 'axios';
 
 class App extends Component {
-
   constructor(props) {
     super();
     this.state = {
-      messages: initialMessages,
+      messages: {},
       color: 'green',
       isMouseInside: false,
-      isFetching: false
+      isFetching: false,
+      loadedMore: false
     };
     this.loadAdditionalMessages = this.loadAdditionalMessages.bind(this);
     this.addMessagetoList = this.addMessagetoList.bind(this);
@@ -25,29 +23,20 @@ class App extends Component {
     this.handleMouseEnter = this.handleMouseEnter.bind(this);
     this.handleMouseLeave = this.handleMouseLeave.bind(this);
     this.fetchMessages = this.fetchMessages.bind(this);
+    this.MESSAGE_SERVICE_URL = "http://localhost:4000/messages";
   }
 
   fetchMessages = () => {
-    var MESSAGE_SERVICE_URL = "http://localhost";
-    // this.setState({...this.state, isFetching: true})
     this.setState( (prevState) => ({isFetching: true}) );
-    // fetch(MESSAGE_SERVICE_URL)
-    //   .then(response => response.json())
-    //   .then(result => 
-    //           this.setState( (prevState) => ({messages: result, isFetching: false}) )
-    //         )
-    axios.get(MESSAGE_SERVICE_URL)
-      .then(response => this.setState( (prevState) => ({messages: response, isFetching: false}) ) )
+    axios.get(this.MESSAGE_SERVICE_URL)
+      .then(response => {
+        this.setState( (prevState) => ({messages: response.data.initialMessages, isFetching: false}) )
+       })
       .catch(e => console.log(e));
     }
   
   componentDidMount() {
     this.fetchMessages();
-    this.timer = setInterval(() => this.fetchMessages(), 5000);
-  }
-
-  componentWillUnmount() {
-    this.timer = null;
   }
 
   handleClick() {
@@ -63,19 +52,29 @@ class App extends Component {
   }
 
   loadAdditionalMessages() {
-    var currentMessages = { ...this.state.messages };
-    var newMessages = Object.assign( currentMessages, additionalMessages );
-    this.setState({ messages: newMessages });
+    this.setState( (prevState) => ({isFetching: true}) );
+    axios.get(this.MESSAGE_SERVICE_URL)
+      .then(response => {
+        this.setState( (prevState) => ({
+          messages: Object.assign( {...this.state.messages}, response.data.additionalMessages ), 
+          isFetching: false,
+          loadedMore: true
+        }))
+       })
+      .catch(e => console.log(e));
   }
 
   addMessagetoList(message) {
-    // console.log("messagessssssss", message);
-    var ts = Date.now();
+    var timeStamp = Date.now();
     var newMessage = {};
-    newMessage[ 'message' + ts ] = message;
+    newMessage[ 'message' + timeStamp ] = message;
     var currentMessages = { ...this.state.messages };
     var newMessages = Object.assign( currentMessages, newMessage );
     this.setState({ messages: newMessages });
+    axios
+      .post(this.MESSAGE_SERVICE_URL, {'message': message})
+      .then(r => console.log(r))
+      .catch(e => console.log(e));
   }
 
   render() {
@@ -88,7 +87,10 @@ class App extends Component {
         </p>
         <p>{this.state.isFetching ? 'Fetching messages...' : ''}</p>
         <AllMessages css="movies" messages={this.state.messages}/>
-        <div className="add-movies"><button onClick={this.loadAdditionalMessages}>Load more...</button></div>
+        <div className="add-movies">{ this.state.loadedMore? null: <button 
+                onClick={this.loadAdditionalMessages}>Load more...</button>
+          }
+        </div>
         <AddMessage addMessage={this.addMessagetoList} />
         <Canvas color={this.state.color}
                 click={this.handleClick}
